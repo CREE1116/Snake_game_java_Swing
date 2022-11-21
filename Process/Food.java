@@ -11,11 +11,13 @@ public class Food implements Runnable {
     private MainPanel mainPanel;
     private Vector<FoodEntity> FoodMap;
     private int rows,cols;
+    private boolean endingBoolean;
     public Food(int rows, int cols,int Delay){
         this.rows = rows;
         this.cols = cols;
         this.Delay = Delay;
         FoodMap = new Vector<>();
+        endingBoolean = false;
 
     }
     public boolean eatFood(int x, int y){
@@ -26,6 +28,12 @@ public class Food implements Runnable {
             }
         }
         return false;
+    }
+    public void end() throws Exception{
+        throw new Exception("Game Over");
+    }
+    public void ending(){
+        endingBoolean = true;
     }
 
     private void setPanelFood(FoodEntity entity){
@@ -55,6 +63,8 @@ public class Food implements Runnable {
                 if(FoodMap.size()<5)
                     spread();
                 else refresh();
+                if(endingBoolean)  
+                end();
             } catch (Exception e) {
                 e.printStackTrace();
                 return;

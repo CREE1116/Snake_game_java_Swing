@@ -14,31 +14,43 @@ import java.awt.GridLayout;
 
 public class MainPanel extends JPanel {
     private GridLayout layout;
-    private MainFrame mainFrame;
+    private CardPanel cardPanel;
     private int rows, cols;
     private Snake snake;
     private Food food;
     private JPanel[][] Map;
     private Color Default = new Color(50,50,50);
 
-    public MainPanel() {
+    public MainPanel(boolean isDoubleBuffered) {
+        super(isDoubleBuffered);
         rows = 35;
         cols = 35;
         layout = new GridLayout(rows, cols);
         this.setLayout(layout);
         addGridPanel(rows, cols);
-        this.setBackground(Color.DARK_GRAY);
+        this.setBackground(Default);
         this.setBorder(new TitledBorder(new LineBorder(Color.white)));
+        runSnake();
+        runFood();
+    }
+    public void restart(){
+            addGridPanel(rows, cols);
+            runSnake();
+            runFood();
+    }
+
+    private void runSnake(){
         snake = new Snake();
         snake.initialize(this);
-        snake.Start(rows, cols,100);
+        snake.init(rows, cols,100);
+        Thread SnakeThread = new Thread(snake);
+        SnakeThread.start();
+    }
+    private void runFood(){
         food = new Food(rows, cols, 2000);
         food.initialize(this);
-        Thread SnakeThread = new Thread(snake);
         Thread FoodThread = new Thread(food);
-        SnakeThread.start();
         FoodThread.start();
-        System.out.println("hi");
     }
 
     private void addGridPanel(int rows, int cols) {
@@ -77,8 +89,9 @@ public class MainPanel extends JPanel {
         }
     }
 
-    public void gameOverAction() {
-        mainFrame.gameOverAction();
+    public void gameOverAction(){
+        food.ending();
+        cardPanel.gameOverAction();
     }
 
     public void setHead(int rows, int cols) {
@@ -103,7 +116,7 @@ public class MainPanel extends JPanel {
         Map[cols][rows].setBackground(Color.white);
     }
 
-    public void initialize(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
+    public void initialize(CardPanel cardPanel) {
+        this.cardPanel = cardPanel;
     }
 }

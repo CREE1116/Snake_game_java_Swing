@@ -8,35 +8,28 @@ public class MainFrame extends JFrame implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private MainPanel mainPanel;
-	private GameOverPanel gameOverPanel;
+	private CardPanel cardPanel;
+
 
 	public MainFrame() {
 		this.setSize(500, 500);
-		this.setResizable(false);
+		this.setResizable(true);
 		this.setTitle("Snake Game");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.gameOverPanel = new GameOverPanel();
-		gameOverPanel.setVisible(false);
-		this.add(gameOverPanel);
-		this.mainPanel = new MainPanel();
-		mainPanel.setVisible(true);
-		this.add(mainPanel);
+		cardPanel = new CardPanel();
+		cardPanel.setVisible(true);
+		initialize();
+		this.add(cardPanel);
 		this.addKeyListener(this);
 	}
-
-	public void gameOverAction() {
-		gameOverPanel.setVisible(true);
-		mainPanel.setVisible(false);
-	}
-
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		mainPanel.keyEventHandler(e.getKeyCode());
+		cardPanel.keyEventHandler(e.getKeyCode());
 	}
 
 	public void initialize() {
-		mainPanel.initialize(this);
+		cardPanel.initialize(this);
 	}
 
 	@Override

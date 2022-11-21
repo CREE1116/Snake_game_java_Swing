@@ -16,7 +16,7 @@ public class Snake implements Runnable {
     private MainPanel mainPanel;
     private boolean addBoodyBoolean = false;
 
-    public void Start(int rows, int cols,int Delay) {
+    public void init(int rows, int cols,int Delay) {
         this.Delay = Delay;
         head = new HeadEntity(new Location(rows/2, cols/2),Direction.STOP);
         this.SnakeBody = new Vector<>();
