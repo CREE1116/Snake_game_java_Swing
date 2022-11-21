@@ -69,9 +69,6 @@ public class MainPanel extends JPanel {
                 if (!snake.getCurrentDirection().equals(Direction.UP))
                     snake.ChangeDirection(Direction.DOWN);
                 break;
-            case 32:
-                snake.eatFood();
-                break;
             default:
                 ;
                 break;
