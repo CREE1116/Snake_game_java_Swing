@@ -21,15 +21,14 @@ public class MainPanel extends JPanel {
     public MainPanel() {
         rows = 25;
         cols = 25;
-        this.setBackground(Color.DARK_GRAY);
-        this.setBorder(new TitledBorder(new LineBorder(Color.white)));
         layout = new GridLayout(rows, cols);
         this.setLayout(layout);
         addGridPanel(rows, cols);
-        // this.addKeyListener(new MyKeyListener());
+        this.setBackground(Color.DARK_GRAY);
+        this.setBorder(new TitledBorder(new LineBorder(Color.white)));
         snake = new Snake();
         snake.initialize(this);
-        snake.Start(5, 0);
+        snake.Start(rows/2, cols/2);
         Thread SnakeThread = new Thread(snake);
         SnakeThread.start();
         System.out.println("hi");

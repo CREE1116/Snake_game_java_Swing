@@ -1,8 +1,10 @@
 package Process;
 
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import Frame.MainPanel;
+import Global.Location;
 import Global.Constance.Distance;
 import Global.Constance.Entity;
 
@@ -18,8 +20,8 @@ public class Snake implements Runnable {
 
     public void Start(int rows, int cols) {
         Entity temp = Entity.eSankeHead;
-        temp.setLocate(rows, cols);
-        temp.setDistance(Distance.RIGHT);
+        temp.setLocation(rows, cols);
+        temp.setDistance(Distance.STOP);
         mainPanel.setHead(rows, cols);
         SnakeBody.add(temp);
     }
@@ -29,44 +31,33 @@ public class Snake implements Runnable {
     }
 
     private void move() throws Exception {
-        Entity head = SnakeBody.get(0);
-        int x = head.getX();
-        int y = head.getY();
-        mainPanel.setDefault(x, y);
-        head.move();
-        mainPanel.setHead(head.getX(), head.getY());
-        if (SnakeBody.size() < 2)
-            return;
-        for (int i = 1; i < SnakeBody.size(); i++) {
-            Entity tempEntity = SnakeBody.get(i);
-            int tempX = tempEntity.getX();
-            int tempY = tempEntity.getY();
-            mainPanel.setDefault(tempX, tempY);
-            tempEntity.setLocate(x, y);
-            SnakeBody.set(i, tempEntity);
-            mainPanel.setBody(x, y);
-            x = tempX;
-            y = tempY;
-        }
-        crush(head.getX(), head.getY());
-    }
-
-    public Distance getCurrentDistance() {
-        return SnakeBody.get(0).getDistance();
-    }
-
-    public void addBody() {
-        Entity temp = Entity.eSankeBody;
-        temp.setLocate(SnakeBody.get(SnakeBody.size() - 1).getX(),
-                SnakeBody.get(SnakeBody.size() - 1).getY());
-        SnakeBody.add(temp);
+        Location temp = getHead().geLocation().Clone();
+        MoveHead();
+        if(SnakeBody.size()>1)MoveBody(temp,addBoodyBoolean);
+        if(addBoodyBoolean&&SnakeBody.size()==1)addBody(temp);
+        if(addBoodyBoolean)addBoodyBoolean=false;
+        crush(SnakeBody.get(0).geLocation());
         showList(SnakeBody);
+    }
+
+    public Entity getHead() {
+        return SnakeBody.get(0);
+    }
+    public Distance getCurrentDistance(){
+        return getHead().getDistance();
+    }
+
+    public void addBody(Location tempLocation) {
+        Entity temp = Entity.eSankeBody.setLocation(tempLocation.Clone());
+        SnakeBody.add(temp);
+        setPanelState(temp);
+
     }
 
     private void showList(Vector<Entity> vector) {
         System.out.print("<");
         for (Entity temp : vector)
-            System.out.print(temp.OutStirng() + " ");
+            System.out.print(temp.OutStirng() + ", ");
         System.out.println(">");
     }
 
@@ -78,13 +69,40 @@ public class Snake implements Runnable {
         this.mainPanel = mainPanel;
     }
 
-    private void crush(int x, int y) throws Exception {
+    private void crush(Location location) throws Exception {
         for (Entity temp : SnakeBody) {
-            if (temp.equals(Entity.eSankeBody) && temp.checkLocation(x, y)) {
+            if (temp.equals(Entity.eSankeBody) && temp.checkLocation(location)) {
                 mainPanel.gameOverAction();
                 throw new Exception();
             }
         }
+    }
+    private void setPanelState(Entity entity){
+        switch (entity){
+            case eSankeHead: mainPanel.setHead(entity.geLocation().getX(), entity.geLocation().getY());
+                break;
+            case eSankeBody: mainPanel.setBody(entity.geLocation().getX(), entity.geLocation().getY());
+                break;
+            case eFood: mainPanel.setFood(entity.geLocation().getX(), entity.geLocation().getY());
+                break;
+            case eDefault: mainPanel.setDefault(entity.geLocation().getX(), entity.geLocation().getY());
+        }
+    }
+    private void MoveHead() throws InterruptedException{
+        Entity Head = SnakeBody.get(0);
+        setPanelState(Entity.eDefault.setLocation(Head.geLocation()));
+        Head.move();
+        setPanelState(Head);
+    }
+    private void MoveBody(Location location,boolean addBoodyBoolean) throws InterruptedException{
+    if(!addBoodyBoolean){
+        setPanelState(Entity.eDefault.setLocation(SnakeBody.get(SnakeBody.size()-1).geLocation().Clone()));
+        SnakeBody.remove(SnakeBody.size()-1);
+        }
+        Entity newEntity = Entity.eSankeBody.setLocation(new Location(location.getX(),location.getY()));
+        SnakeBody.add(1,newEntity);
+        setPanelState(newEntity);
+
     }
 
     @Override
@@ -93,11 +111,8 @@ public class Snake implements Runnable {
             try {// 딜레이 만큼 기다렸다가 입력된방향으로 이동
                 Thread.sleep(Delay);
                 move();
-                if (addBoodyBoolean) {
-                    addBody();
-                    this.addBoodyBoolean = false;
-                }
             } catch (Exception e) {
+                e.printStackTrace();
                 return;
             }
         }

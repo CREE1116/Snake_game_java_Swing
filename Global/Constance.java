@@ -4,9 +4,10 @@ public class Constance {
     public enum Entity {
         eSankeBody("Body"),
         eSankeHead("Head"),
-        eFood("Food");
+        eFood("Food"),
+        eDefault("Default");
 
-        private int cols, rows;
+        private Location location;
         private String name;
         private Distance distance;
 
@@ -14,17 +15,17 @@ public class Constance {
             this.name = name;
         }
 
-        public int getX() {
-            return this.cols;
+        public Location geLocation(){
+            return this.location;
         }
 
-        public int getY() {
-            return this.rows;
+        public Entity setLocation(int cols, int rows) {
+            this.location = new Location(cols, rows);
+            return this;
         }
-
-        public void setLocate(int cols, int rows) {
-            this.cols = cols;
-            this.rows = rows;
+        public Entity setLocation(Location location) {
+            this.location = location;
+            return this;
         }
 
         public void setDistance(Distance distance) {
@@ -35,18 +36,20 @@ public class Constance {
             return this.distance;
         }
 
-        public void move() {
-            this.setLocate(this.cols + distance.getXDistance(), this.rows + distance.getYDistance());
+        public Entity move() {
+            this.location.addLocation(distance.getXDistance(), distance.getYDistance());
+            return this;
         }
 
         public boolean checkLocation(int x, int y) {
-            if (this.cols == x && this.rows == y)
-                return true;
-            return false;
+            return this.location.equals(new Location(x, y));
+        }
+        public boolean checkLocation(Location location){
+            return this.location.equals(location);
         }
 
         public String OutStirng() {
-            return this.name + "[" + cols + " , " + rows + "]";
+            return this.name + "[" + location.getX() + " , " + location.getY() + "]";
         }
     }
 
@@ -54,7 +57,8 @@ public class Constance {
         UP(0, -1),
         DOWN(0, 1),
         LEFT(-1, 0),
-        RIGHT(1, 0);
+        RIGHT(1, 0),
+        STOP(0,0);
 
         private int cols, rows;
 
