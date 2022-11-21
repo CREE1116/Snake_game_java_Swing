@@ -1,55 +1,25 @@
 package Global;
 
 public class Constance {
-    public enum Entity {
-        eSankeBody("Body"),
-        eSankeHead("Head"),
-        eFood("Food"),
-        eDefault("Default");
+    public enum Type {
+        eSankeBody(),
+        eSankeHead(),
+        eFood(),
+        eDefault();
 
         private Location location;
-        private String name;
         private Direction direction;
-
-        Entity(String name) {
-            this.name = name;
-        }
 
         public Location geLocation(){
             return this.location;
-        }
-
-        public Entity setLocation(int cols, int rows) {
-            this.location = new Location(cols, rows);
-            return this;
-        }
-        public Entity setLocation(Location location) {
-            this.location = location;
-            return this;
         }
 
         public void setDirection(Direction direction) {
             this.direction = direction;
         }
 
-        public Direction getDistance() {
+        public Direction getDirection() {
             return this.direction;
-        }
-
-        public Entity move() {
-            this.location.addLocation(direction.getX(), direction.getY());
-            return this;
-        }
-
-        public boolean checkLocation(int x, int y) {
-            return this.location.equals(new Location(x, y));
-        }
-        public boolean checkLocation(Location location){
-            return this.location.equals(location);
-        }
-
-        public String OutStirng() {
-            return this.name + "[" + location.getX() + " , " + location.getY() + "]";
         }
     }
 

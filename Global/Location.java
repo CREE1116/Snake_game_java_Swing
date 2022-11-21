@@ -28,4 +28,7 @@ public class Location implements Cloneable{
         }
         return null;
     }
+    public String toString(){
+        return "[ "+this.x+" , "+this.y+" ]";
+    }
 }

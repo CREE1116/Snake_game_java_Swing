@@ -1,67 +1,47 @@
 package Process;
 
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 
+import Entity.BodyEntity;
+import Entity.Entity;
+import Entity.HeadEntity;
 import Frame.MainPanel;
 import Global.Location;
 import Global.Constance.Direction;
-import Global.Constance.Entity;
 
 public class Snake implements Runnable {
     private Vector<Entity> SnakeBody;
-    final private int Delay = 150;
+    private HeadEntity head;
+    private int Delay;
     private MainPanel mainPanel;
     private boolean addBoodyBoolean = false;
 
-    public Snake() {
-        SnakeBody = new Vector<>();
+    public void Start(int rows, int cols,int Delay) {
+        this.Delay = Delay;
+        head = new HeadEntity(new Location(rows/2, cols/2),Direction.STOP);
+        this.SnakeBody = new Vector<>();
     }
 
-    public void Start(int rows, int cols) {
-        Entity temp = Entity.eSankeHead;
-        temp.setLocation(rows, cols);
-        temp.setDirection(Direction.STOP);
-        mainPanel.setHead(rows, cols);
-        SnakeBody.add(temp);
+    public void ChangeDirection(Direction direction) {
+        head.setDirection(direction);
     }
-
-    public void ChangeDistance(Direction direction) {
-        SnakeBody.get(0).setDirection(direction);
+    public Direction getCurrentDirection(){
+        return this.head.getDirection();
     }
 
     private void move() throws Exception {
-        Location temp = getHead().geLocation().Clone();
+        Location headLocation = head.getLocation().Clone();
+        mainPanel.setDefault(headLocation.getX(), headLocation.getY());
         MoveHead();
-        if(SnakeBody.size()>1)MoveBody(temp,addBoodyBoolean);
-        if(addBoodyBoolean&&SnakeBody.size()==1)addBody(temp);
-        if(addBoodyBoolean)addBoodyBoolean=false;
-        crush(SnakeBody.get(0).geLocation());
-        showList(SnakeBody);
-    }
-
-    public Entity getHead() {
-        return SnakeBody.get(0);
-    }
-    public Direction getCurrentDistance(){
-        return getHead().getDistance();
+        MoveBody(headLocation);
+        crush(head.getLocation());
     }
 
     public void addBody(Location tempLocation) {
-        Entity temp = Entity.eSankeBody.setLocation(tempLocation.Clone());
-        SnakeBody.add(temp);
-        setPanelState(temp);
-
+        SnakeBody.add(new BodyEntity(tempLocation));
     }
 
-    private void showList(Vector<Entity> vector) {
-        System.out.print("<");
-        for (Entity temp : vector)
-            System.out.print(temp.OutStirng() + ", ");
-        System.out.println(">");
-    }
-
-    public void addBodyBoolean() {
+    public void eatFood() {
         this.addBoodyBoolean = true;
     }
 
@@ -71,38 +51,43 @@ public class Snake implements Runnable {
 
     private void crush(Location location) throws Exception {
         for (Entity temp : SnakeBody) {
-            if (temp.equals(Entity.eSankeBody) && temp.checkLocation(location)) {
+            if (temp.checkLocation(location)) {
                 mainPanel.gameOverAction();
                 throw new Exception();
             }
         }
     }
     private void setPanelState(Entity entity){
-        switch (entity){
-            case eSankeHead: mainPanel.setHead(entity.geLocation().getX(), entity.geLocation().getY());
+        switch (entity.Type()){
+            case eSankeHead: mainPanel.setHead(entity.getLocation().getX(), entity.getLocation().getY());
                 break;
-            case eSankeBody: mainPanel.setBody(entity.geLocation().getX(), entity.geLocation().getY());
+            case eSankeBody: mainPanel.setBody(entity.getLocation().getX(), entity.getLocation().getY());
                 break;
-            case eFood: mainPanel.setFood(entity.geLocation().getX(), entity.geLocation().getY());
+            case eDefault: mainPanel.setDefault(entity.getLocation().getX(), entity.getLocation().getY());
+            default:
                 break;
-            case eDefault: mainPanel.setDefault(entity.geLocation().getX(), entity.geLocation().getY());
         }
     }
     private void MoveHead() throws InterruptedException{
-        Entity Head = SnakeBody.get(0);
-        setPanelState(Entity.eDefault.setLocation(Head.geLocation()));
-        Head.move();
-        setPanelState(Head);
+        head.move();
+        setPanelState(head);
     }
-    private void MoveBody(Location location,boolean addBoodyBoolean) throws InterruptedException{
-    if(!addBoodyBoolean){
-        setPanelState(Entity.eDefault.setLocation(SnakeBody.get(SnakeBody.size()-1).geLocation().Clone()));
-        SnakeBody.remove(SnakeBody.size()-1);
+    private void MoveBody(Location location) throws InterruptedException{
+        Location temp1Location = location;
+        Location temp2Location;
+        for(Entity entity : SnakeBody){
+            temp2Location = entity.getLocation();
+            mainPanel.setDefault(temp2Location.getX(), temp2Location.getY());
+            entity.setLocation(temp1Location);
+            setPanelState(entity);
+            temp1Location = temp2Location;
         }
-        Entity newEntity = Entity.eSankeBody.setLocation(new Location(location.getX(),location.getY()));
-        SnakeBody.add(1,newEntity);
-        setPanelState(newEntity);
-
+        System.out.println(head.getLocation());
+        if(addBoodyBoolean){
+            System.out.println("add!! "+temp1Location);
+            addBody(temp1Location);
+            addBoodyBoolean = false;
+        }
     }
 
     @Override

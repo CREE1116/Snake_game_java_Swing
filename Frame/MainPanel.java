@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import Global.Constance.Direction;
-
+import Process.Food;
 import Process.Snake;
 
 import java.awt.GridLayout;
@@ -16,11 +16,12 @@ public class MainPanel extends JPanel {
     private MainFrame mainFrame;
     private int rows, cols;
     private Snake snake;
+    private Food food;
     private JPanel[][] Map;
 
     public MainPanel() {
-        rows = 25;
-        cols = 25;
+        rows = 35;
+        cols = 35;
         layout = new GridLayout(rows, cols);
         this.setLayout(layout);
         addGridPanel(rows, cols);
@@ -28,9 +29,13 @@ public class MainPanel extends JPanel {
         this.setBorder(new TitledBorder(new LineBorder(Color.white)));
         snake = new Snake();
         snake.initialize(this);
-        snake.Start(rows/2, cols/2);
+        snake.Start(rows, cols,100);
+        food = new Food(rows, cols, 2000);
+        food.initialize(this);
         Thread SnakeThread = new Thread(snake);
+        Thread FoodThread = new Thread(food);
         SnakeThread.start();
+        FoodThread.start();
         System.out.println("hi");
     }
 
@@ -49,23 +54,23 @@ public class MainPanel extends JPanel {
     public void keyEventHandler(int keyCode) {
         switch (keyCode) {
             case 37:
-                if (!snake.getCurrentDistance().equals(Direction.RIGHT))
-                    snake.ChangeDistance(Direction.LEFT);
+                if (!snake.getCurrentDirection().equals(Direction.RIGHT))
+                    snake.ChangeDirection(Direction.LEFT);
                 break;
             case 38:
-                if (!snake.getCurrentDistance().equals(Direction.DOWN))
-                    snake.ChangeDistance(Direction.UP);
+                if (!snake.getCurrentDirection().equals(Direction.DOWN))
+                    snake.ChangeDirection(Direction.UP);
                 break;
             case 39:
-                if (!snake.getCurrentDistance().equals(Direction.LEFT))
-                    snake.ChangeDistance(Direction.RIGHT);
+                if (!snake.getCurrentDirection().equals(Direction.LEFT))
+                    snake.ChangeDirection(Direction.RIGHT);
                 break;
             case 40:
-                if (!snake.getCurrentDistance().equals(Direction.UP))
-                    snake.ChangeDistance(Direction.DOWN);
+                if (!snake.getCurrentDirection().equals(Direction.UP))
+                    snake.ChangeDirection(Direction.DOWN);
                 break;
             case 32:
-                snake.addBodyBoolean();
+                snake.eatFood();
                 break;
             default:
                 ;
@@ -81,6 +86,8 @@ public class MainPanel extends JPanel {
         try {
             Map[cols][rows].setBackground(Color.red);
             Map[cols][rows].setBorder(new TitledBorder(new LineBorder(Color.white)));
+            if(food.eatFood(rows,cols))
+                snake.eatFood();
         } catch (ArrayIndexOutOfBoundsException e) {
             this.gameOverAction();
         }
