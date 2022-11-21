@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import Global.Constance.Distance;
+import Global.Constance.Direction;
 
 import Process.Snake;
 
@@ -49,20 +49,20 @@ public class MainPanel extends JPanel {
     public void keyEventHandler(int keyCode) {
         switch (keyCode) {
             case 37:
-                if (!snake.getCurrentDistance().equals(Distance.RIGHT))
-                    snake.ChangeDistance(Distance.LEFT);
+                if (!snake.getCurrentDistance().equals(Direction.RIGHT))
+                    snake.ChangeDistance(Direction.LEFT);
                 break;
             case 38:
-                if (!snake.getCurrentDistance().equals(Distance.DOWN))
-                    snake.ChangeDistance(Distance.UP);
+                if (!snake.getCurrentDistance().equals(Direction.DOWN))
+                    snake.ChangeDistance(Direction.UP);
                 break;
             case 39:
-                if (!snake.getCurrentDistance().equals(Distance.LEFT))
-                    snake.ChangeDistance(Distance.RIGHT);
+                if (!snake.getCurrentDistance().equals(Direction.LEFT))
+                    snake.ChangeDistance(Direction.RIGHT);
                 break;
             case 40:
-                if (!snake.getCurrentDistance().equals(Distance.UP))
-                    snake.ChangeDistance(Distance.DOWN);
+                if (!snake.getCurrentDistance().equals(Direction.UP))
+                    snake.ChangeDistance(Direction.DOWN);
                 break;
             case 32:
                 snake.addBodyBoolean();

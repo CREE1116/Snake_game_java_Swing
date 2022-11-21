@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import Frame.MainPanel;
 import Global.Location;
-import Global.Constance.Distance;
+import Global.Constance.Direction;
 import Global.Constance.Entity;
 
 public class Snake implements Runnable {
@@ -21,13 +21,13 @@ public class Snake implements Runnable {
     public void Start(int rows, int cols) {
         Entity temp = Entity.eSankeHead;
         temp.setLocation(rows, cols);
-        temp.setDistance(Distance.STOP);
+        temp.setDirection(Direction.STOP);
         mainPanel.setHead(rows, cols);
         SnakeBody.add(temp);
     }
 
-    public void ChangeDistance(Distance distance) {
-        SnakeBody.get(0).setDistance(distance);
+    public void ChangeDistance(Direction direction) {
+        SnakeBody.get(0).setDirection(direction);
     }
 
     private void move() throws Exception {
@@ -43,7 +43,7 @@ public class Snake implements Runnable {
     public Entity getHead() {
         return SnakeBody.get(0);
     }
-    public Distance getCurrentDistance(){
+    public Direction getCurrentDistance(){
         return getHead().getDistance();
     }
 

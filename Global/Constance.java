@@ -9,7 +9,7 @@ public class Constance {
 
         private Location location;
         private String name;
-        private Distance distance;
+        private Direction direction;
 
         Entity(String name) {
             this.name = name;
@@ -28,16 +28,16 @@ public class Constance {
             return this;
         }
 
-        public void setDistance(Distance distance) {
-            this.distance = distance;
+        public void setDirection(Direction direction) {
+            this.direction = direction;
         }
 
-        public Distance getDistance() {
-            return this.distance;
+        public Direction getDistance() {
+            return this.direction;
         }
 
         public Entity move() {
-            this.location.addLocation(distance.getXDistance(), distance.getYDistance());
+            this.location.addLocation(direction.getX(), direction.getY());
             return this;
         }
 
@@ -53,7 +53,7 @@ public class Constance {
         }
     }
 
-    public enum Distance {
+    public enum Direction {
         UP(0, -1),
         DOWN(0, 1),
         LEFT(-1, 0),
@@ -62,16 +62,16 @@ public class Constance {
 
         private int cols, rows;
 
-        Distance(int cols, int rows) {
+        Direction(int cols, int rows) {
             this.cols = cols;
             this.rows = rows;
         }
 
-        public int getXDistance() {
+        public int getX() {
             return this.cols;
         }
 
-        public int getYDistance() {
+        public int getY() {
             return this.rows;
         }
     }
