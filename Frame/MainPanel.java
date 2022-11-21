@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import Global.Constance.Direction;
 import Process.Food;
@@ -18,6 +19,7 @@ public class MainPanel extends JPanel {
     private Snake snake;
     private Food food;
     private JPanel[][] Map;
+    private Color Default = new Color(50,50,50);
 
     public MainPanel() {
         rows = 35;
@@ -44,8 +46,8 @@ public class MainPanel extends JPanel {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 Map[i][j] = new JPanel();
-                Map[i][j].setBorder(new TitledBorder(new LineBorder(Color.white)));
-                Map[i][j].setBackground(Color.gray);
+                Map[i][j].setBorder(new TitledBorder(new MatteBorder(0,0,1,1,new Color(25,25,25,100))));
+                Map[i][j].setBackground(Default);
                 this.add(Map[i][j]);
             }
         }
@@ -82,7 +84,6 @@ public class MainPanel extends JPanel {
     public void setHead(int rows, int cols) {
         try {
             Map[cols][rows].setBackground(Color.red);
-            Map[cols][rows].setBorder(new TitledBorder(new LineBorder(Color.white)));
             if(food.eatFood(rows,cols))
                 snake.eatFood();
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -92,17 +93,14 @@ public class MainPanel extends JPanel {
 
     public void setBody(int rows, int cols) {
         Map[cols][rows].setBackground(Color.green);
-        Map[cols][rows].setBorder(new TitledBorder(new LineBorder(Color.white)));
     }
 
     public void setDefault(int rows, int cols) {
-        Map[cols][rows].setBackground(Color.gray);
-        Map[cols][rows].setBorder(new TitledBorder(new LineBorder(Color.white)));
+        Map[cols][rows].setBackground(Default);
     }
 
     public void setFood(int rows, int cols) {
         Map[cols][rows].setBackground(Color.white);
-        Map[cols][rows].setBorder(new TitledBorder(new LineBorder(Color.black)));
     }
 
     public void initialize(MainFrame mainFrame) {

@@ -1,6 +1,5 @@
 package Frame;
 
-import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -15,8 +14,6 @@ public class MainFrame extends JFrame implements KeyListener {
 	public MainFrame() {
 		this.setSize(500, 500);
 		this.setResizable(false);
-		BorderLayout layoutManager = new BorderLayout();
-		this.setLayout(layoutManager);
 		this.setTitle("Snake Game");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.gameOverPanel = new GameOverPanel();

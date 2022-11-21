@@ -42,6 +42,11 @@ public class Food implements Runnable {
     private int randomInt(int max){
         return (int)(Math.random()*(max-1));
     }
+    private void refresh(){
+        for(FoodEntity food : FoodMap){
+            setPanelFood(food);
+        }
+    }
     @Override
     public void run() {
         while (true) {
@@ -49,6 +54,7 @@ public class Food implements Runnable {
                 Thread.sleep(Delay+(int)((Math.random()*Delay/10)-Delay/20));
                 if(FoodMap.size()<5)
                     spread();
+                else refresh();
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
