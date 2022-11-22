@@ -3,7 +3,6 @@ package Frame;
 import java.awt.Color;
 
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import Global.Constance.Direction;
@@ -15,44 +14,56 @@ import java.awt.GridLayout;
 public class MainPanel extends JPanel {
     private GridLayout layout;
     private CardPanel cardPanel;
-    private int rows, cols;
+    private int Size,Delay;
     private Snake snake;
     private Food food;
     private JPanel[][] Map;
     private Color Default = new Color(50,50,50);
+    private Color HeadColor, BodyColor, FoodColor;
+    private boolean isRunning;
 
-    public MainPanel(boolean isDoubleBuffered) {
-        super(isDoubleBuffered);
-        rows = 35;
-        cols = 35;
-        layout = new GridLayout(rows, cols);
-        this.setLayout(layout);
-        addGridPanel(rows, cols);
+    public MainPanel() {
+        super(true);
+        Size = 35;
+        isRunning = false;
+        Delay = 100;
+        MapSetting();
+        ColorsSetting();
+    }
+    public MainPanel(int Size, int Delay) {
+        super(true);
+        this.Size = Size;
+        isRunning = false;
+        this.Delay = Delay;
+        MapSetting();
+        ColorsSetting();
+    }
+    private void ColorsSetting(){
+        HeadColor = new Color(250,250,250,200);
+        BodyColor = new Color(200,200,200,200);
+        FoodColor = new Color(200,200,200,220);
+        Map[Size/2][Size/2].setBackground(HeadColor);
         this.setBackground(Default);
-        this.setBorder(new TitledBorder(new LineBorder(Color.white)));
-        runSnake();
-        runFood();
     }
-    public void restart(){
-            addGridPanel(rows, cols);
-            runSnake();
-            runFood();
-    }
-
+    public void MapSetting(){
+        System.out.println("Size: "+Size);
+        layout = new GridLayout(Size, Size);
+        this.setLayout(layout);
+        addGridPanel(Size, Size);
+    } 
     private void runSnake(){
         snake = new Snake();
         snake.initialize(this);
-        snake.init(rows, cols,100);
+        snake.init(Size, Size,Delay);
         Thread SnakeThread = new Thread(snake);
         SnakeThread.start();
     }
     private void runFood(){
-        food = new Food(rows, cols, 2000);
+        food = new Food(Size, Size, Delay*30);
         food.initialize(this);
         Thread FoodThread = new Thread(food);
         FoodThread.start();
     }
-
     private void addGridPanel(int rows, int cols) {
         Map = new JPanel[cols][rows];
         for (int i = 0; i < rows; i++) {
@@ -64,8 +75,12 @@ public class MainPanel extends JPanel {
             }
         }
     }
-
     public void keyEventHandler(int keyCode) {
+        if(!isRunning){
+            runSnake();
+            runFood();
+            isRunning = true;
+        }
         switch (keyCode) {
             case 37:
                 if (!snake.getCurrentDirection().equals(Direction.RIGHT))
@@ -88,24 +103,24 @@ public class MainPanel extends JPanel {
                 break;
         }
     }
-
+    public int getScore(){
+        return snake.getSize();
+    }
     public void gameOverAction(){
         food.ending();
         cardPanel.gameOverAction();
     }
-
     public void setHead(int rows, int cols) {
         try {
-            Map[cols][rows].setBackground(Color.red);
+            Map[cols][rows].setBackground(HeadColor);
             if(food.eatFood(rows,cols))
                 snake.eatFood();
         } catch (ArrayIndexOutOfBoundsException e) {
             this.gameOverAction();
         }
     }
-
     public void setBody(int rows, int cols) {
-        Map[cols][rows].setBackground(Color.green);
+        Map[cols][rows].setBackground(BodyColor);
     }
 
     public void setDefault(int rows, int cols) {
@@ -113,7 +128,7 @@ public class MainPanel extends JPanel {
     }
 
     public void setFood(int rows, int cols) {
-        Map[cols][rows].setBackground(Color.white);
+        Map[cols][rows].setBackground(FoodColor);
     }
 
     public void initialize(CardPanel cardPanel) {

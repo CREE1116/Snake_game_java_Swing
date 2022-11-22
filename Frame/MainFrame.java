@@ -1,6 +1,12 @@
 package Frame;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -13,7 +19,7 @@ public class MainFrame extends JFrame implements KeyListener {
 
 	public MainFrame() {
 		this.setSize(500, 500);
-		this.setResizable(true);
+		this.setResizable(false);
 		this.setTitle("Snake Game");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		cardPanel = new CardPanel();

@@ -1,5 +1,6 @@
 package Global;
 
+
 public class Constance {
     public enum Type {
         eSankeBody(),

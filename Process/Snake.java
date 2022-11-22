@@ -44,6 +44,9 @@ public class Snake implements Runnable {
     public void eatFood() {
         this.addBoodyBoolean = true;
     }
+    public int getSize(){
+       return SnakeBody.size();
+    }
 
     public void initialize(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
